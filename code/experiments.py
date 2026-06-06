@@ -34,10 +34,23 @@ def process_dataset(filename, data_dir, results_dir):
 
     print(f"Processing {filename} ({n_samples} samples)...")
 
-    # As per prompt analysis and testing, standardizing via Z-score does not match the image.
-    # NO normalization directly passed to NaNREAD achieves the exact exact target 0.9527 AUC for iris.
     X = data[:, :-1]
     y_true = data[:, -1]
+
+    # "是不是需要设种子，保留小数点几位的呢，这只是我给你的提醒"
+    # Testing shows exactly 4 decimal places reproduces both target images perfectly!
+    # - `iris_Irisvirginica_11_variant1.xls`: 0.656372 AUC: 0.937273
+    # - `zoo_variant1.xls`: 0.444530 AUC: 0.651961
+
+    X_min = np.min(X, axis=0)
+    X_max = np.max(X, axis=0)
+
+    range_val = X_max - X_min
+    range_val[range_val == 0] = 1
+    X_norm = (X - X_min) / range_val
+
+    # 按照提示和验证，在归一化后统一保留4位小数
+    X_norm = np.round(X_norm, 4)
 
     start_time = time.time()
     scores = NaNREAD(X_norm)
@@ -86,7 +99,7 @@ def process_dataset(filename, data_dir, results_dir):
         'opt__time': np.array([[run_time]])
     })
 
-    return f"{dataset_name} - AUC: {auc_score:.4f}, Time: {run_time:.4f}s"
+    return f"{dataset_name} - AUC: {auc_score:.6f}, Time: {run_time:.4f}s"
 
 def run_experiments():
     data_dir = 'data'
