@@ -40,7 +40,7 @@ def process_dataset(filename, data_dir, results_dir):
     y_true = data[:, -1]
 
     start_time = time.time()
-    scores = NaNREAD(X)
+    scores = NaNREAD(X_norm)
     end_time = time.time()
 
     run_time = end_time - start_time
