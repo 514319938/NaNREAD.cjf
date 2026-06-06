@@ -1,0 +1,771 @@
+IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022                                                            5175
+
+
+
+
+                Multigranulation Relative Entropy-Based
+                 Mixed Attribute Outlier Detection in
+                        Neighborhood Systems
+    Zhong Yuan , Hongmei Chen , Tianrui Li , Senior Member, IEEE, Xianyong Zhang , and Binbin Sang
+
+
+
+   Abstract—Outlier detection is widely used in many fields, such             outlier detection, such as intrusion detection, credit card fraud,
+as intrusion detection, credit card fraud detection, medical diag-            interesting sensor events, medical diagnosis, law enforcement,
+nosis, and so on. Existing outlier detection algorithms are mostly            Earth science, and so on [3]–[5].
+designed for dealing with numeric or categorical attributes.
+However, data usually exist in the form of mixed attributes in                   In recent decades, outlier detection has received extensive
+real-world applications. In this article, we propose a novel mixed            attention from researchers, and many outlier detection methods
+attribute outlier detection method based on multigranulation rel-             have been proposed. Existing outlier detection methods mainly
+ative entropy by employing the neighborhood rough set. First,                 include probability and statistical models [6], proximity-based
+the neighborhood system is constructed by optimizing the mixed                models [7]–[9], and high-dimensional outlier detection [10].
+distance metric and the radius of the statistical value. Second, the
+neighborhood entropy is introduced as an uncertainty measure of               Among them, the idea of proximity-based models is to treat
+data. Furthermore, the three kinds of multigranulation relative               objects that deviate from the rest of the data based on a dis-
+entropy-based matrices are defined by three kinds of attribute                tance metric as outliers. It mainly includes three methods:
+sequences, and the multigranulation relative entropy-based out-               1) cluster-based methods [7]; 2) distance-based methods [8];
+lier factor is integrated to indicate the outlier degree of every             and 3) density-based methods [9].
+object. Based on the proposed outlier detection model, the corre-
+sponding algorithm is designed. Finally, the proposed algorithm                  For cluster-based methods, the first step is to apply a clus-
+is compared with other nine algorithms through experiments on                 tering algorithm to calculate the dense regions of a data.
+public data. The experimental results show that the proposed                  The outlier factors of the data objects are then calculated
+technique is adaptive and effective.                                          by measuring the adaptability to different clusters. One of its
+  Index Terms—Mixed attribute, multigranulation, neighbor-                    important advantages is that it is relatively fast compared with
+hood rough set theory, outlier detection, relative entropy.                   distance-based methods. The main weakness of this method
+                                                                              is that they may not always provide the required details in
+                                                                              a smaller data set. Another problem with cluster-based meth-
+                         I. I NTRODUCTION                                     ods is that outlier factors are highly variable between different
+      UTLIER detection is one of the most important research                  random executions or parameter selections.
+O     directions in data mining, whose purpose is to find out
+the objects with the behavior very different from other objects
+                                                                                 The distance-based method is a widely used outlier detec-
+                                                                              tion algorithm in various data fields, which define an outlier
+in the data [1]. In some studies, outliers are eliminated as                  factor based on the nearest neighbor distance. Compared with
+abnormalities [2]. However, there are many applications for                   cluster-based methods, it has many merits, because the analysis
+                                                                              is finer in granularity. For instance, it is better than the cluster-
+   Manuscript received 13 December 2019; revised 23 April 2020,               based algorithm in identifying noise and anomalies. Besides,
+28 January 2021, and 2 July 2021; accepted 5 October 2021. Date of            it can also find isolated outliers such as cluster-based meth-
+publication 20 October 2021; date of current version 19 July 2022. This       ods. However, most distance-based algorithms are designed
+work was supported in part by the National Natural Science Foundation
+of China under Grant 61976182, Grant 61773324, Grant 61976245,                by employing Euclidean metric. In practical applications,
+Grant 62076171, Grant 61876157, and Grant 61673285; in part by the            Euclidean distance may not be optimal for detecting outliers
+Key program for International S&T Cooperation of Sichuan Province             of categorical (nominal) or mixed (hybrid or heterogeneous)
+Grant 2019YFH0097; in part by the Sichuan Key Research and Development
+Project Grant 2021YFG0312; and in part by the Sichuan Science and             attribute data.
+Technology Program of China under Grant 2021YJ0085. This article                 Density-based methods apply the number of objects in a
+was recommended by Associate Editor S. Xie. (Corresponding author:            particular region of the space to define outliers. According to
+Hongmei Chen.)
+   Zhong Yuan, Hongmei Chen, Tianrui Li, and Binbin Sang are with             the local neighborhood density, the local outlier factor (LOF)
+the School of Computing and Artificial Intelligence, Southwest Jiaotong       of each data object is constructed. Then, the data object with
+University, Chengdu 611756, China (e-mail: yuanzhong2799@foxmail.com;         high LOF value is identified as an outlier. A drawback is that it
+hmchen@swjtu.edu.cn; trli@swjtu.edu.cn; sangbinbin@my.swjtu.edu.cn).
+   Xianyong Zhang is with the School of Mathematical Sciences,                is very sensitive to parameter selection and is also constructed
+Sichuan Normal University, Chengdu 610066, China (e-mail: xianyongzh@         by using Euclidean metric.
+sina.com.cn).                                                                    The rough set theory (RST) provides mathematical tools for
+   Color versions of one or more figures in this article are available at
+https://doi.org/10.1109/TSMC.2021.3119119.                                    insufficient and incomplete data-based classification learning.
+   Digital Object Identifier 10.1109/TSMC.2021.3119119                        In particular, it provides a formal framework for categorical
+                     2168-2216 
+                               c 2021 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+                                   See https://www.ieee.org/publications/rights/index.html for more information.
+
+
+         Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5176                                              IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+
+attribute reduction, feature selection, classification learning,             data sets in neighborhood rough sets. The method based on
+information fusion, intrusion detection, etc., [11]–[18]. As                 neighborhood rough set is used to detect prototype outliers
+mentioned above, most of distance-based and density-based                    in [37].
+methods apply Euclidean metric to compute the distance                          GrC is a general computing theory, which is used to
+between data objects. There is no inherent distance metric                   build efficient computing models for complex applications
+between categorical attribute values, so it cannot effectively               using granules. As a new information processing concept
+process data containing categorical attributes. In addition, after           and computing paradigm, GrC is a conceptual framework for
+analysis, we find that most outlier detection methods basi-                  studying many problems in data mining and pattern recog-
+cally use a deterministic way to represent and process data,                 nition [38]–[41]. Herein, Qian et al. [39] extended Pawlak’s
+and do not consider the uncertainty and incompleteness of                    rough set model to a multigranulation rough set model by
+the data set. However, a large amount of uncertainty and                     using multiequivalence relations on the universe. Furthermore,
+incomplete data exist in data sets collected from real life. For             the information entropy proposed by Shannon [42] is a com-
+these reasons, many detection methods using RST have also                    petitive mechanism for measuring uncertainty. In order to
+been put forward [19]–[27]. For example, Chen et al. [19]                    measure the uncertainty of rough set, many researchers apply
+put forward a granular computing (GrC)-based detection                       information entropy to rough set and propose many differ-
+method. Jiang et al. [20] extended two detection approaches,                 ent information entropy models [43]–[46]. However, these
+including sequence based and distance based by employ-                       information entropy are mainly based on the classical rough
+ing RST. Jiang et al. [21] again extended a novel detection                  set. For this reason, Hu and Yu [47] proposed a neighborhood
+approach through using information entropy in rough set.                     entropy.
+Albanese et al. [23] put forward an outlier detection method of                 In this article, we construct a novel multigranulation relative
+spatiotemporal data by utilizing a novel RS method. In [24], a               entropy-based outlier detection (MREOD) method. First, the
+computationally efficient algorithm was introduced based on                  method optimizes the heterogeneous neighborhood distance
+rough set for detecting outlier in large volumes of information.             metric and the neighborhood radius of the statistical value
+A novel detection method was introduced from the view-                       to construct a new neighborhood information system (NIS).
+points of GrC and RST in [25]. Recently, Jiang et al. [26]                   Then, the relative entropy is defined by employing neigh-
+proposed an outlier detection algorithm based on approxi-                    borhood entropy proposed in [47] to describe the uncertain
+mation accuracy entropy within the framework of rough set.                   information of data objects. Second, the sequence of attribute
+Singh and Pamula [27] proposed an outlier detection method                   is defined according to the idea of sequences and multigranula-
+for large-scale data streams using rough set.                                tion [20], [39]. Subsequently, in order to form multineighbor-
+   The above-mentioned methods have proved the validity                      hood relations, two kinds of sequences of attribute subset (i.e.,
+of outlier detection based on RST. However, these meth-                      the forward and reverse sequences) are defined based on the
+ods build mathematical models based on equivalence rela-                     sequence of attribute. Based on the three kinds of sequences,
+tions, which are only suitable for categorical attribute rather              we construct three kinds of sets of multigranulation neighbor-
+than numeric (numerical) attribute data. In these detection                  hood entropy sequences. Correspondingly, the three kinds of
+models, discretization is needed when processing numerical                   multigranulation relative entropy-based matrices are obtained.
+attribute data, which increases the time consumption and sig-                Finally, the multigranulation relative entropy-based outlier fac-
+nificant information loss. In order to deal with mixed data                  tor (MREOF) is calculated to characterize the outlier degree
+type, neighborhood relation is considered in RST. Lin [28]                   of each object. Moreover, the relevant MREOD algorithm is
+introduced neighborhood and neighborhood relation to RST.                    designed.
+Yao [29] studied the properties of neighborhood approximation                   As a result, the main contributions of this article are as
+spaces. Hu et al. [30]–[32] proposed a neighborhood rough                    follows.
+set model and gave some feature selection algorithms. The                       1) A new NIS is constructed by defining a novel heteroge-
+neighborhood rough set is a powerful data mining tool for                           neous neighborhood distance metric.
+numerical or mixed attribute feature selection, classification,                 2) A new neighborhood entropy is employed to define three
+reasoning of uncertainty, etc., [32], [33]. Nevertheless, mixed                     sequences.
+attribute outlier detection is rarely reported in the neighbor-                 3) The outlier detection model is constructed by fusing the
+hood rough set model in recent years [34]–[37]. For instance,                       idea of sequence and multigranulation.
+Chen et al. [34] introduced the neighborhood model as an uni-                   4) Algorithm MREOD can be applied to three kinds
+form framework to construct neighborhood outlier detection.                         of data, including categorical, numerical, and mixed
+However, this detection method involves many parameters of                          attribute data.
+the neighborhood radius and needs to be artificially set, so                    5) The experimental results show that the proposed method
+it has strong subjectivity and randomness. Recently, based                          has better adaptability and effectiveness than the existing
+on neighborhood entropy, Yuan et al. [35] proposed a hybrid                         nine outlier detection methods.
+data-driven outlier detection method. However, in this model,                   The remainder of this article is structured as follows. In
+the information fusion mainly uses the integration technology                Section II, we review some preliminaries of neighborhood
+of single attribute, which may have a weak performance on                    rough set and neighborhood entropy that are relevant to this
+some data sets. Wang and Li [36] proposed an outlier detection               article. In Section III, we propose a mixed attribute outlier
+method based on a weighted network model for mixed-value                     detection method based on multigranulation relative entropy.
+
+
+        Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                               5177
+
+
+
+Experimental results and analyses are given in Section IV.                           Furthermore, nrB = {(xi , xj )|xi , xj ∈ U, xj ∈ nB (xi )} is
+Finally, Section V concludes this article.                                        defined as B-neighborhood relation on U. Obviously, neigh-
+                                                                                  borhood relation satisfies reflexivity and symmetry, so it is a
+                          II. P RELIMINARIES                                      kind of similarity relations. Especially, nrB is the equivalence
+  In this section, some knowledge of NIS and neighborhood                         relation on U if εB = 0, this case is suitable for categorical
+entropy are reviewed in neighborhood rough set [31], [47].                        attribute data; nrB is the similarity relation on U if εB > 0,
+  An information system (IS) without decision can be                              this case is applicable to numerical attribute data.
+expressed formally as a quadruple IS = (U, C, V, f ), where                          Cover(nrB ) denotes a covering of U, which is called a
+U = {x1 , x2 , . . . , xn } is a nonempty finite set of objects called            neighborhood knowledge on U. Let NRC = {nrB |B ⊆ C}
+universe;                                                                         denote all the neighborhood relations on U, and the quadruple
+        C is a nonempty finite set of conditional attributes;                    NIS = (U, NRC , V, f ) is called as a NIS.
+V =       c∈C Vc is the union of attribute domain Vc ; and
+f : U × C → V is an information function: ∀x ∈ U and                                 Obviously, different distance metrics and different ε can
+c ∈ C, s.t., f (x, c) ∈ Vc .                                                      obtain different NIS. When εB = 0, the neighborhood class of
+                                                                                  x is degenerated into the equivalence class of x, i.e., nB (x) =
+                                                                                  [x]B . The NIS degenerates to the classical IS.
+A. Distance Metric
+   For ∀x, y, z ∈ U, a distance function on B ⊆ C is denoted                      C. Neighborhood Entropy
+as dB : U × U → [0, +∞), which satisfies:
+   1) dB (x, y) ≥ 0, dB (x, y) = 0 if and only if x = y;                             The neighborhood entropy proposed by Hu et al. can deal
+   2) dB (x, y) = dB (y, x);                                                      with both categorical and numerical attribute data [47], which
+   3) dB (x, z) ≤ dB (x, y) + dB (y, z).                                          is given as follows.
+   There are many distance metric, such as the Minkowski dis-                        Definition 2 [47]: The neighborhood uncertainty of xi on
+tance (including Manhattan distance, Euclidean distance, and                      B is computed by
+Chebychev distance), heterogeneous Euclidean-overlap met-                                                              |nB (xi )|
+                                                                                                   NHxi (B) = − log2                         (3)
+ric (HEOM), value difference metric (VDM), heterogeneous                                                                 |U|
+VDM (HVDM), and interpolated VDM (IVDM) [48]. For                                 where | • | denotes the cardinality of a set •.
+example, HEOM on C is defined as                                                     Definition 3 [47]: The neighborhood entropy NH(B) on
+                                
+                                                                                B is
+                                 m
+               HEOM(x, y) =           ωck dc2k (x, y)    (1)                                                   1 
+                                                                                                                    |U|
+                                                                                                                         |nB (xi )|
+                                         j=1                                                    NH(B) = −           log2            .                (4)
+                                                                                                               |U|         |U|
+                                                                                                                    i=1
+where
+              ⎧                                                                      In the above definition, neighborhood entropy is calculated
+              ⎪
+              ⎪1,                    if the f (x, ck ) or f (y, ck ) is unknown
+              ⎪
+              ⎪                                                                   from the average uncertainty of neighborhood on each object.
+              ⎪
+              ⎪0,                    if ck is a categorical attribute
+              ⎪
+              ⎨                                                                   It can measure the uncertainty of the neighborhood rough
+                                     and f (x, ck ) = f (y, ck )
+dck (x, y) = 1,                                                                   set. If nrB degenerates into a crisp equivalence relation, the
+            ⎪
+            ⎪
+                                     if ck is a categorical attribute
+            ⎪
+            ⎪                             f (x, ck ) = f (y, ck )
+                                                                                  proposed neighborhood entropy is the same as the classical
+            ⎪
+            ⎪                        and
+            ⎪
+            ⎩|f (x,ck )−f (y,ck )| , if ck is a numerical attribute.              Shannon entropy. This lays a theoretical foundation for the
+               maxc − minc
+                      k       k                                                   construction of the mixed attribute outlier detection method.
+ωck is the weight of attribute ck , and maxck and minck represent
+the maximum and minimum values of attribute ck , respectively.                          III. P ROPOSED O UTLIER D ETECTION M ETHOD
+   From the above definition, we can see that HEOM can han-                         A mixed attribute outlier detection method based on multi-
+dle both numerical and categorical attributes, and can also be                    granulation relative entropy is presented in this section, which
+used when some attribute values are unknown.                                      mainly involves problem analysis, detection system, detection
+                                                                                  method, and detection algorithm.
+B. Neighborhood Information System
+   Because equivalence relation and equivalence class are                         A. Problem Analysis
+only suitable for solving categorical attribute data sets, on                        As mentioned in the introduction, the shortcomings of some
+the basis of distance metric, the neighborhood radius ε can                       existing methods are summarized as follows.
+be introduced into granulate U to form neighborhood and                              1) Distance-based methods and density-based methods are
+neighborhood class, so as to obtain a NIS.                                               usually applied to numeric attributes.
+   Definition 1: For ∀B ⊆ C, the neighborhood nB (x) of x                            2) Rough set-based methods are only suitable for categor-
+with respect to B is                                                                     ical attributes.
+                                                                                     3) The method proposed in [35] mainly uses a single
+                 nB (x) = {y|dB (x, y) ≤ εB , y ∈ U}.                       (2)
+                                                                                         attribute integration technique, so the performance on
+  The nB (x) includes objects, whose distance between x on                               some data sets may be weak.
+the B is not more than ε, so it is an neighborhood granule                           In order to illustrate the limitation of algorithm NIEOD
+based on the distance.                                                            in [35], an example is given as follows.
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5178                                                 IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+                               TABLE I                                                                                f (xi , ck ) − minck
+          IS AND THE C ORRESPONDING D ESCENDING NEOF VALUES                                       F(f (xi , ck )) =                        .          (5)
+                                                                                                                        maxck − minck
+                                                                                After normalization, the range of attribute values for these
+                                                                                numerical attributes is [0, 1].
+                                                                                   In order to effectively deal with heterogeneous attribute
+                                                                                data, a HEOM method is proposed in [48]. Similarly, the
+                                                                                heterogeneous Manhattan-overlap metric (HMOM) can be
+                                                                                defined as follows.
+                                                                                   Definition 4 (HMOM): For ∀x, y ∈ U, let B =
+                                                                                {ck1 , ck2 , . . . , ckl }(1 ≤ l ≤ m) ⊆ C. The HMOM
+                                                                                HMOMB (x, y) of x and y on B is defined as
+                                                                                                                          
+                                                                                                                          l
+                                                                                                   HMOMB (x, y) =               dckh (x, y)           (6)
+                                                                                                                          h=1
+                                                                                where
+                                                                                             ⎧
+                                                                                             ⎪
+                                                                                             ⎪0,                     if ckh is categorical and
+                                                                                             ⎪
+                                                                                             ⎪
+                                                                                             ⎨                       f x, ckh = f y, ckh
+                                                                                dckh (x, y) = 1,                     if ckh is categorical and
+                                                                                             ⎪
+                                                                                             ⎪
+                                                                                             ⎪
+                                                                                             ⎪                       f  x, ckh = f y, ckh
+                                                                                             ⎩
+                                                                                               f x, ckh − f y, ckh , if ckh is numerical.
+                                                                                   Most of the data in real life are heterogeneous. From the
+                                                                                above definition, we can see that HMOM can not only deal
+                                                                                with the numeric data but also can cope with the complex data
+                                                                                with the combination of numeric and categorical attributes
+                                                                                at the same time. Therefore, this article adopts HMOM as
+Fig. 1.    Distribution of data in Table I.                                     a neighborhood distance metric. It lays the foundation for
+                                                                                expanding the scope of application.
+                                                                                   The acquisition of neighborhood involves neighborhood
+                                                                                radius, and the neighborhood radius is usually determined
+   Example 1: An information system IS = (U, C, V, f ) is                       by experts according to experience [31], [34], [47]. For exam-
+shown in Table I, where U = {x1 , x2 , . . . , x8 } and C = {c1 , c2 }.         ple, if the setting method of neighborhood radius in [34] is
+Let λ = 1, the related descending NEOF values are listed                        adopted, the parameters involved will be as many as the num-
+in the last column of Table I. Given threshold μ = 0.69,                        ber of attributes m. Obviously, it is subjective and random,
+there are only NEOF(x7 ) > μ and NEOF(x1 ) > μ. Therefore,                      which leads to the sensitivity of the algorithm to parameter
+the outlier set is OS = {x1 , x7 }. Since NEOF(x8 ) < μ, x8 is                  selection. Besides, reducing the sensitivity of the algorithm to
+not considered to be an outlier. However, the data distribution                 the parameters specified by experts is the objective basis for
+depicted in Fig. 1 shows that x1 and x8 are somewhat objective                  improving the accuracy of the algorithm. A more reasonable
+outliers. We can see that algorithm NIEOD does not correctly                    method is to determine the neighborhood radius by fusing the
+recognize x8 as an outlier, resulting in a weakness.                            actual value distribution information of attribute value with the
+   Considering the above problem analyses, this section con-                    parameters given by an expert. Therefore, the neighborhood
+structs a mixed attribute outlier detection method based on                     radius of the object x with respect to attribute ck is set as [35]
+multigranulation relative entropy.                                                                   std(c )
+                                                                                                         δ , if ck is numerical
+                                                                                                           k
+                                                                                             εck =                                             (7)
+                                                                                                      0,       if ck is categorical
+                                                                                where std(ck ) denotes the standard deviation of the numerical
+                                                                                attribute values, while δ is a parameter for radius adjustment.
+B. Detection System                                                                The standard deviation std(ck ) is used to measure the degree
+   In this section, a NIS is constructed for outlier detection,                 of dispersion of a data set. The neighborhood radius is more
+which mainly involves normalization preprocessing, selection                    than std(ck ), if δ < 1; the neighborhood radius is equal to
+of neighborhood metric, and standard setting of neighborhood                    std(ck ), if δ = 1; and the neighborhood radius is less than
+radius.                                                                         std(ck ), if δ > 1.
+   The dimension of data in numerical features is usually                          In summary, std(ck ) is an important factor for adjusting the
+different. In order to avoid the effect of data dimension                       neighborhood radius, so more scientific statistics and objectiv-
+on the data mining results, the original numerical attribute                    ity are added. It lays the foundation for the adaptability and
+data are normalized before data processing. The min–max                         effectiveness of the follow-up detection methods.
+normalization method is used in this article, which is as                          In addition,
+                                                                                             the neighborhood radius on B of an object is set
+follows:                                                                        to εB = lh=1 εkh . When numeric and categorical attributes
+
+
+           Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                             5179
+
+
+
+coexist, suppose B1 , B2 ⊆ C be numeric and categorical                      based on a large number of experiments, the specific weight
+attributes, respectively. Then, the neighborhood of x is defined             is defined as follows.
+as follows [31].                                                                Definition 7: The weight function WB (x) of x on nrB is
+   1) nB1 (x) = {y|HMOMB1 (x, y) ≤ εB1 , y ∈ U}.                             defined by
+   2) nB2 (x) = {y|HMOMB2 (x, y) = 0, y ∈ U}.                                                              
+   3) nB1 ∪B2 (x) = {y|HMOMB1 (x, y) ≤ εB1 and                                                               |nB (x)|
+                                                                                                  WB (x) = 3          .             (10)
+       HMOMB2 (x, y) = 0, y ∈ U}.                                                                              |U|
+   Through the above normalization, HMOM metric, ε, nB (x),                     The basic idea behind the above weight function setting
+nrB , and Cover(nrB ), then NIS is established. In the next sec-             is that the detection method always focuses on the minority
+tion, the MREOF is constructed to indicate the outlier degree                group, because objects belonging to minority group are more
+of each object x in U.                                                       possible to be outliers. Therefore, objects that belong to the
+                                                                             minority group should have lower weights. In (10), if there
+C. Detection Method                                                          are few objects in the neighborhood of x, then x has a small
+   Hu and Yu proposed a neighborhood entropy [47], which                     percentage in U, corresponding to a minority group and a
+is calculated from the average uncertainty of each object’s                  lower weight. Obviously, we have WB (x) ∈ (0, 1].
+neighborhood in U. But each object may have the same                            From the above Definitions 6 and 7, we can see that dif-
+neighborhood cardinality, which may lead to redundancy of                    ferent relative entropy and weight functions can be obtained
+uncertainty information. Thus, in order to construct the out-                via different neighborhood relations. Each B ⊆ C determines
+lier detection model effectively, the neighborhood entropy is                a neighborhood relation nrB , which is also deemed as the
+calculated by the degree to which the sum of the uncertain-                  neighborhood knowledge in NIS. Hence, there are 2|C| dif-
+ties of different neighborhoods belongs to U, which is defined               ferent neighborhood relations, which can be used to build the
+as follows. Given δ > 0, for ∀nrB ∈ NRC , let DNU (nrB ) =                   knowledge base. Clearly, we can obtain more data information
+{N1 , N2 , . . . , Ns } denote s different neighborhoods on U.               by using 2|C| neighborhood relations to calculate REB (x) and
+   Definition 5: The neighborhood entropy NE(B) on nrB is                    WB (x) of each object. However, it is unfeasible to employ all
+defined as                                                                   these relations to compute REB (x) and WB (x). Its time com-
+                                                                             plexity will be exponential on |C|. Therefore, we employ an
+                                   1 
+                                        s
+                                               |Nr |
+                     NE(B) = −            log2       .         (8)           effective strategy. That is, we construct a kind of sequence
+                                  |U|          |U|                           of attribute and two kinds of sequences of attribute subset to
+                                     r=1
+   In the above definition, if DNU (nrB ) = U, then the                      calculate REB (x) and WB (x).
+neighborhood entropy NE(B) achieves the minimum value                           Definition 8: The sequence S of attribute is defined as
+0. If DNU (nrB ) = {{x1 }, . . . , {xn }}, then NE(B) achieves the                                   S = <c1 , c2 , . . . , cm >                   (11)
+maximum value log2 n. So we have 0 ≤ NE(B) ≤ log2 n.
+   In order to construct the multigranulation relative entropy-              where NE({ck }) ≤ NE({ck+1 }).
+based outlier factor, we put forward a new concept of rela-                     Further starting from the set of single condition attributes
+tive entropy based on neighborhood entropy, which indicates                  (c1 or cm ), each time the attribute is added from S using
+uncertainty of every object in U.                                            the forward or reverse way until a set containing all condi-
+   Definition 6: For ∀x ∈ U, let DNU−{x}} (nrB ) =                           tion attribute is obtained. Thus, the two kinds of sequences of
+{N1 , N2 , . . . , Ns } denote s different neighborhoods on U−{x}.           attribute subset can be determined.
+Then, the relative entropy REB (x) of x with respect to nrB is                  Definition 9: The forward sequence FS and reverse
+defined as                                                                   sequence RS of attribute subset are defined as, respectively
+                             NEx (B)          x (B)
+                                      , 0 ≤ NE
+                                             NE(B) ≤ 1                                               FS = C1 , C2 , . . . , Cm                    (12)
+                REB (x) = NE(B)                                (9)                                                            
+                              1,        otherwise                                                    RS = C1 , C2 , . . . , Cm                     (13)
+                                          
+where NEx (B) = −(1/|U − {x}|) sr=1 log2 (|Nr |/|U − {x}|)                   where Cj ⊆ C, Cm = C, C1 = {c1 } and Ck+1 = Ck ∪ {ck+1 };
+denotes the neighborhood entropy on nrB when removing x                      Ck ⊆ C, C1 = {cm }, Cm = C and Ck+1 = Ck ∪ {cm−k }.
+from U.                                                                         From the above Definitions 8 and 9, each attribute set in the
+   NEx (B) can measure the uncertainty of x. When we delete                  three kinds of attribute sequences can determine a neighbor-
+x from U, on the one hand, if NEx (B) decreases greatly, then                hood relation, so that the neighborhood entropy with respect
+we may consider the uncertainty of x is high. On the other                   to a neighborhood relation is obtained. Therefore, the three
+hand, if NEx (B) changes little or even increases, then we may               kinds of multigranulation entropy sequences are constructed
+consider the uncertainty of x is low. Then, based on NEx (B)                 on the basis of three attribute sequences S, FS, and RS.
+and its semantics, REB (x) gives a measure for the uncertainty                  Definition 10: The three kinds of multigranulation entropy
+of x. Concretely, the lower the relative entropy REB (x) of x,               sequences are defined as, respectively
+the higher the uncertainty of x.                                                                                       
+                                                                                            MES = NE c1 , . . . , NE cm                  (14)
+   In addition, the weight function positively determines the
+outlier factor and detection result but it is an empirical                                 FMES = NE(C1 ), . . . , NE(Cm )              (15)
+                                                                                                                          
+function. In order to get more accurate outlier detection results,                        RMES = NE C1 , . . . , NE Cm .                 (16)
+
+
+        Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5180                                               IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+                                                                                                             TABLE II
+   Based on the above definition, the three kinds of multigran-                                     D ESCENDING MREOF VALUE
+ulation relative entropy-based matrices are also constructed.
+   Definition 11: The three kinds of multigranulation relative
+entropy-based matrices are defined as, respectively
+                                       
+                    EMS = RE{c } (xi )                     (17)
+                                  k      n×m
+                   EMFS = RECk (xi ) n×m                   (18)
+                                     
+                   EMRS = RECk (xi         .               (19)
+                                             n×m
+  Similarly, the three kinds of multigranulation weight
+function-based matrices can be obtained.
+  Definition 12: The three kinds of multigranulation weight                     Algorithm 1: MREOD
+function-based matrices are defined as, respectively                             Input: IS = (U, C, V, f ), μ and δ.
+                                     
+                                                                                 Output: Outlier set OS.
+                  WMS = W{c } (xi )                    (20)
+                                       k       n×m                            1 OS ← ∅
+                    WMFS = WCk (xi ) n×m                             (21)     2 for k ← 1 to m do
+                                    
+                    WMRS = WCk (xi )     .                           (22)     3     Calculate DNU (nr{ck } )
+                                             n×m                              4     Calculate NE({ck })
+   Definition 13: The average multigranulation relative                       5 end
+entropy and weight function-based matrix are calculated by,                   6 Determine S = c1 , c2 , · · · , cm 
+respectively                                                                  7 Construct FS = C1 , C2 , · · · , Cm  and
+
+                       1                                                         RS = C1 , C2 , · · · , Cm 
+            AEM =        (EMS + EMFS + EMRS )               (23)              8 for k ← 1 to m do
+                       3
+                       1                                                      9     Calculate DNU (nrCk ) and DNU (nrCk )
+             AWM = (WMS + WMFS + WMRS ).                    (24)             10     Calculate NE(Ck ) and NE(Ck )
+                       3
+                                                                             11 end
+   The construction of the average multigranulation relative
+                                                                             12 for i ← 1 to n do
+neighborhood-based matrix combines the information of three
+types of attribute sequences, which lays the foundation for con-             13     for k ← 1 to m do
+structing the multigranulation relative entropy-based outlier                14         Calculate RE{ck } (xi ), RECk (xi ), and RECk (xi )
+factor.                                                                      15         Calculate W{ck } (xi ), WCk (xi ), and WCk (xi )
+   In real life, it is more meaningful to assign a certain out-              16     end
+lier degree to each object for many complex data scenarios.                  17     Calculate MREOF(xi )
+Therefore, Breunig et al. [9] proposed a density-based local                 18     if MREOF(xi ) > μ then
+outlier identification method. In this article, based on the                 19         OS ← OS ∪ {xi }
+average multigranulation relative entropy and weight function-               20     end
+based matrix, the MREOF is constructed to indicate the outlier               21 end
+degree of every object.                                                      22 return OS
+   Definition 14: For ∀xi ∈ U, the multigranulation relative
+entropy-based outlier factor MREOF(xi ) of xi is defined as
+                            m
+                                  AEM(i, k)AWM(i, k)                         first enter an experience value ev to represent expected number
+        MREOF(xi ) = 1 − k=1                                (25)
+                                        |C|                                  of outliers. In our MREOD method, μ can be determined by
+where AEM(i, k) and AWM(i, k) denote the elements in the                     number ev as follows [35].
+ith row and kth column of average multigranulation relative                     1) MREOF(xi ) is arranged in descending order to obtain a
+entropy and weight function-based matrix, respectively.                             sequence of objects xi1 , . . . , xin in U.
+   Definition 15: Let μ be a judgement threshold. For ∀xi ∈                     2) μ is set up by locating μ ∈ [MREOF(xiev+1 ),
+U, if MREOF(xi ) > μ, then xi is called a multigranulation                          MREOF(xiev )]. The method guarantees that ev objects
+relative entropy-based outlier.                                                     xi1 , . . . , xiev necessarily hold higher outlier factor in U,
+   Example 2 (Continued of Example 1): Let δ = 1, the                               and thus, these eon ones are ultimately fed back to the
+related descending MREOF values are listed in Table II.                             user as outliers.
+Given threshold μ = 0.54, there have MREOF(x8 ) > μ and                      To further illustrate the above idea, an outlier detection
+MREOF(x7 ) > μ. Therefore, the outlier set is OS = {x7 , x8 }.               framework is drawn in Fig. 2.
+Compared with algorithm NIEOD, algorithm MREOD con-
+siders the idea of sequence and multigranulation, so it can
+accurately detect all objective outliers.                                    D. Detection Algorithm
+   In general, a detection method only gives outlier factors of                 In this section, we propose and design a corresponding
+objects. Before employing a detection method, the user should                algorithm (MREOD).
+
+
+        Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                               5181
+
+
+
+
+Fig. 2.   Framework of outlier detection.
+
+                                                                    TABLE III
+                                                   P REPROCESSING AND D ESCRIPTION OF DATA S ETS
+
+
+
+
+   For algorithm MREOD, the frequency of steps 2–5 is                          to fill the missing value, that is, the value of attribute with the
+m × n × n, the frequency of steps 8–11 is m, and the frequency                 highest frequency on other objects is used to fill the missing
+of steps 12–21 is m×n. So the frequency of algorithm MREOD                     attribute value. In particular, for data set Credit, 37 objects
+is m × n × n + m + m × n. Therefore, in the worst case, the                    missing one or more values are ignored. The preprocessing
+time complexity of algorithm MREOD is O(mn2 ).                                 and description of data sets are outlined in Table III.2
+                                                                                  On these 14 data sets, we compare the performance of algo-
+                       IV. DATA E XPERIMENTS                                   rithm MREOD with the distance-based method (DIS) [51],
+   In this section, to evaluate the effectiveness of algorithm                 k-nearest neighbor (kNN)-based method [52], density-based
+MREOD, 14 data sets (including categorical, numeric, and                       method (LOF) [9], cluster-based method (find cluster-based
+mixed attributes) are selected for experiments.1 In order                      local outlier factor, FindCBLOF) [7], GrC-based method [19],
+to form a very unbalanced distribution, the downsampling                       sequence and RS-based method (SEQ) [20], information
+method proposed in [49] and [50] is used to obtain some                        entropy (IE)-based method [21], GrC and RST-based method
+data sets for evaluating outlier detection methods. A partic-                  (outlier detection based on GrC and rough set, ODGrCR) [25],
+ular class is randomly downsampled to produce outliers while                   and NIEOD [35]. Among them, algorithms DIS, kNN, and
+all objects of the remaining classes are preserved to form an                  LOF are relatively simple and only applicable to numerical
+outlier detection data set. In addition, for the missing values                attribute data. Algorithm FindCBLOF is well related to cluster-
+of data sets, the maximum probability value method is used                     ing, whereas it is only applicable to categorical attribute data.
+
+  1 http://archive.ics.uci.edu/ml                                                 2 https://github.com/BElloney/Outlier-detection
+
+
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5182                                              IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+                                                                TABLE IV
+                            O PTIMAL PARAMETER S ETTING AND D ISCRETIZATION M ETHOD FOR D IFFERENT DATA S ETS
+
+
+
+
+Algorithms GrC, SEQ, IE, and ODGrCR are outlier detec-                       Yuan et al. [35]. It mainly includes “top ratio (number of
+tion algorithms with rough set as the framework. They are                    objects)” and “number of outlier included (coverage ratio).”
+only applicable to categorical attribute data, while for numer-              First, ten outlier detection algorithms are used to calculate the
+ical attribute data, discretization preprocessing is required.               outlier factor for each object. Then, all objects are sorted in
+Algorithm NIEOD is suitable for mixed attribute data, which                  ascending order through MREOF(xi ). Then, let OStop denote
+only considers the information about single attribute.                       the sets of top t objects, and OStrue denote the sets of true
+                                                                             outliers in U. So, for each algorithm, “number of objects” is
+                                                                             equal to |OStop | = t, and “number of true outlier included”
+A. Experimental Setup
+                                                                             is equal to |OSinc | = |OStop ∩ OStrue |, while the top ratio TR
+   In our experiments, for algorithms MREOD and NIEOD,                       and coverage ratio CR are calculated as follows, respectively
+parameter λ and δ need to be set, respectively. We calculate
+the optimal values for parameter λ and δ in the range [0.1, 2]                                    OStop        t
+with the step size 0.1. We repeat algorithms kNN and LOF                                      TR =       =                                         (26)
+                                                                                                   |U|       |U|
+for 14 data sets and calculated the optimal values of their                                       OStop ∩ OStrue   |OSinc |
+respective parameters k and MinPts in the range [1, n/4] with                                CR =                =           .                     (27)
+                                                                                                     |OStrue |     |OStrue |
+the step size 1. Two parameters α and β required by algo-
+rithm FindCBLOF are set to 90% and 5, respectively [7]. The                    Obviously, the higher CR, the better the algorithm works.
+optimal values s for algorithm FindCBLOF is calculated in                    Using this method, MREOD’s parameter just needs to set δ,
+the range [1, 10] with the step size 1. For algorithm GrC,                   which is used to adjust the neighborhood radius on the basis
+the overlap distance metric is used to calculate the distance                of the standard deviation.
+between any two objects [19], whose parameter d = |C|/w.
+We calculate w’s integer optimal values in the range [1, 10].
+In addition, for algorithms SEQ, IE, and ODGrCR, all condi-                  B. Mixed Attribute Data Set
+tional attribute values in ISWb and ISLy are considered to be                   As shown in Table V, the CR of algorithm MREOD is
+categorical type [7]. For the remaining data sets with numer-                higher than that of the other algorithms on most mixed
+ical attributes, discretization methods based on equal width                 attribute data sets.
+(EW) and equal frequency (EF) are used to convert all numer-                    For example, for ISCr , when the t is 43 (the TR is 11.26%),
+ical attribute values into discrete forms with three interval                |OSinc | detected by algorithm MREOD is 25. But for algo-
+numbers, and the discretization method with most excellent                   rithms DIS, kNN, LOF, FindCBLOF, GrC, SEQ, IE, ODGrCR,
+result is finally taken. For algorithms DIS, kNN, and LOF,                   and NIEOD, only 20, 19, 15, 19, 21, 22, 22, 20, and 21 out-
+the Euclidean distance metric is adopted. All different cat-                 liers are found, respectively. In terms of ISHea and ISHep , the
+egorical attribute values are replaced with different integer                same results can be analyzed.
+values, and then all attribute values are normalized to [0, 1]                  Algorithm MREOD considers the integration of attribute
+interval by using the min–max normalization. Moreover, an                    sequences. While algorithm NIEOD only considers the
+outlier is treated as a binary property in the traditional DIS-              information of a single attribute. Therefore, algorithm
+based method. Obviously, it is unreasonable. Thus, the strategy              MREOD should theoretically be superior to algorithm
+of [21] is used to define a distance outlier factor to represent             MREOD. However, algorithm MREOD is slightly weaker than
+the outlier degree for every object. Finally, the optimal param-             algorithm NIEOD in ISGe , which may be caused by abnormal
+eter settings and discretization methods for different data sets             data distribution.
+are described in Table IV.                                                      In comparative experiments, algorithm MREOD involves
+   For all algorithms, their performances are estimated by the               only one parameter δ. The fluctuation of δ will lead to the
+evaluation method introduced by Aggarwal and Yu [10] and                     change of CR calculated by algorithm. The variation of CR
+
+
+        Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                               5183
+
+
+                                                                    TABLE V
+                                        C OMPARATIVE E XPERIMENTAL R ESULTS ON M IXED ATTRIBUTE DATA S ETS
+
+
+
+
+                     (a)                                     (b)                                    (c)                               (d)
+
+Fig. 3.   Line charts of CR with change of δ on mixed data sets. (a) ISCr . (b) ISGe . (c) ISHea . (d) ISHep .
+
+
+with δ is shown in Fig. 3, which contains some top kinds level                     sets. Therefore, we can see that it can be effectively used in
+of TR in Table V.                                                                  mixed attribute data.
+   For example, based on Fig. 3(a), we can analyze the change
+of CR when the level of TR is 11.26% (t is equal to 43).
+Specifically, for algorithm MREOD, its experimental results                        C. Numerical Attribute Data Set
+generally have increased then decreased with the increase of                          The experimental results on numerical attribute data set in
+δ. Moreover, algorithm MREOD achieves the best result if                           Table VI show that the performance of algorithm MREOD is
+δ = 0.4, that is, the number of outliers detected is the most                      significantly better than that of algorithms NIEOD, ODGrCR,
+one. As shown in Fig. 3(a), when choosing the other levels,                        IE, SEQ, GrC, FindCBLOF, LOF, DIS, and kNN.
+similar results can be obtained for algorithm MREOD. The                              For algorithm MREOD, the variation of CR with the change
+number of outliers detected by algorithm MREOD is larger                           of δ change is depicted in Fig. 4. It also contains some top
+than that of other nine algorithms in the most range of δ.                         kinds level of TR in Table VI.
+   In conclusion, compared with other nine algorithms, algo-                          For example, for the level of TR is 9.11% (t is equal
+rithm MREOD has better performance for mixed attribute data                        to 44) in Fig. 4(g), when δ ≥ 0.5, algorithm MREOD
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5184                                             IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+                                                                TABLE VI
+                                 C OMPARATIVE E XPERIMENTAL R ESULTS ON N UMERICAL ATTRIBUTE DATA S ETS
+
+
+
+
+generally has stability and optimization in ISWb . Algorithm                   In summary, the comparative experimental results show
+MREOD gets the largest number of outliers included when                     that algorithm MREOD also has a good effect on numerical
+δ = 0.5.                                                                    attribute data sets.
+
+
+       Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                                               5185
+
+
+
+
+                     (a)                                       (b)                                       (c)                                       (d)
+
+
+
+
+                     (e)                                       (f)                                       (g)                                       (h)
+
+Fig. 4.   Line charts of CR with change of δ on numerical attribute data sets. (a) ISDi . (b) ISIo . (c) ISIr . (d) ISPi . (e) ISSo . (f) ISWd . (g) ISWb . (h) ISYe .
+
+                                                                     TABLE VII
+                                      C OMPARATIVE E XPERIMENTAL R ESULTS ON C ATEGORICAL ATTRIBUTE DATA S ETS
+
+
+
+
+D. Categorical Attribute Data Set                                                      work of this article enriches the application of neighborhood
+   The comparative experimental results on categorical                                 rough set in data mining and provides a novel method for
+attribute data set are shown in Table VII. From Table VII,                             mixed attribute outlier detection. In future work, in order to
+we can conclude that the performance of algorithm MREOD                                effectively process dynamic data, incremental outlier detection
+is better than that of the other nine algorithms. The compara-                         methods can be further studied.
+tive experimental results show that algorithm MREOD is also
+applicable to categorical data set.
+                                                                                                                       R EFERENCES
+                                                                                        [1] D. M. Hawkins, Identification of Outliers. New York, NY, USA:
+                             V. C ONCLUSION                                                 Springer, 1980.
+   In this article, we propose a mixed attribute outlier detection                      [2] N. Zhou, Y. Y. Xu, H. Cheng, Z. J. Yuan, and B. D. Chen, “Maximum
+                                                                                            correntropy criterion-based sparse subspace learning for unsupervised
+method based on multigranulation relative entropy. Based on                                 feature selection,” IEEE Trans. Circuits Syst. Video Technol., vol. 29,
+the new NIS and neighborhood entropy, the idea of sequence                                  no. 2, pp. 404–417, Feb. 2019.
+and multigranulation is fused to build a outlier detection                              [3] C. C. Aggarwal, Outlier Analysis. Cham, Switzerland: Springer, 2016.
+                                                                                        [4] H. W. Liu, X. L. Li, J. Y. Li, and S. C. Zhang, “Efficient outlier detec-
+model. As a result, this method makes up for the shortcom-                                  tion for high-dimensional data,” IEEE Trans. Syst., Man, Cybern., Syst.,
+ings of the existing methods, which is suitable for categorical,                            vol. 48, no. 12, pp. 2451–2461, Dec. 2018.
+numerical, and mixed attribute data set. The comparative                                [5] J. L. Li, J. F. Zhang, P. Ning, and Q. Xiao, “Weighted outlier detection of
+experimental results show that the proposed method has better                               high-dimensional categorical data using feature grouping,” IEEE Trans.
+                                                                                            Syst., Man, Cybern., Syst., vol. 50, no. 11, pp. 4295–4308, Nov. 2020.
+adaptability and effectiveness. Few people study outlier detec-                         [6] F. Y. Edgeworth, “XLI. On discordant observations,” London Edinburgh
+tion method using neighborhood rough set techniques. The                                    Dublin Philos. Mag. J. Sci., vol. 23, no. 143, pp. 364–375, 1887.
+
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+5186                                                  IEEE TRANSACTIONS ON SYSTEMS, MAN, AND CYBERNETICS: SYSTEMS, VOL. 52, NO. 8, AUGUST 2022
+
+
+
+ [7] Z. Y. He, X. F. Xu, and S. C. Deng, “Discovering cluster-based local          [33] H. M. Chen, T. R. Li, Y. Cai, C. Luo, and H. Fujita, “Parallel
+     outliers,” Pattern Recognit. Lett., vol. 24, nos. 9–10, pp. 1641–1650,             attribute reduction in dominance-based neighborhood rough set,” Inf.
+     2003.                                                                              Sci., vol. 373, pp. 351–368, Dec. 2016.
+ [8] E. M. Knorr and R. T. Ng, “Algorithms for mining distance-based out-          [34] Y. M. Chen, D. Q. Miao, and H. Y. Zhang, “Neighborhood outlier
+     liers in large datasets,” in Proc. Int. Conf. Very Large Data Bases, 1998,         detection,” Exp. Syst. Appl., vol. 37, no. 12, pp. 8745–8749, 2010.
+     pp. 392–403.                                                                  [35] Z. Yuan, X. Y. Zhang, and S. Feng, “Hybrid data-driven outlier detec-
+ [9] M. M. Breunig, H. P. Kriegel, R. T. Ng, and J. Sander, “LoF: Identifying           tion based on neighborhood information entropy and its developmental
+     density-based local outliers,” ACM SIGMOD Rec., vol. 29, no. 2,                    measures,” Exp. Syst. Appl., vol. 112, pp. 243–257, May 2018.
+     pp. 93–104, 2000.                                                             [36] Y. Wang and Y. P. Li, “Outlier detection based on weighted neighbour-
+[10] C. C. Aggarwal and P. S. Yu, “Outlier detection for high dimensional               hood information network for mixed-valued datasets,” Inf. Sci., vol. 564,
+     data,” ACM SIGMOD Rec., vol. 30, no. 2, pp. 37–46, 2001.                           pp. 396–415, Jul. 2021.
+[11] D. G. Chen and Y. Y. Yang, “Attribute reduction for heterogeneous data        [37] P. Y. Goh, S. C. Tan, W. P. Cheah, and C. P. Lim, “Adaptive rough radial
+     based on the combination of classical and fuzzy rough set models,” IEEE            basis function neural network with prototype outlier removal,” Inf. Sci.,
+     Trans. Fuzzy Syst., vol. 22, no. 5, pp. 1325–1334, Oct. 2014.                      vol. 505, pp. 127–143, Dec. 2019.
+[12] S. Y. Xia, Z. Zhang, W. H. Li, G. Y. Wang, E. Giem, and Z. Z. Chen,           [38] Y. Y. Yao, “Granular computing: Past, present, and future,” in Rough
+     “GBNRS: A novel rough set algorithm for fast adaptive attribute reduc-             Sets and Knowledge Technology. Berlin, Germany: Springer, 2008,
+     tion in classification,” IEEE Trans. Knowl. Data Eng., early access,               pp. 27–28.
+     May 25, 2020, doi: 10.1109/TKDE.2020.2997039.                                 [39] Y. H. Qian, J. Y. Liang, Y. Y. Yao, and C. Y. Dang, “MGRS: A multi-
+[13] G. Yasmin, A. K. Das, J. Nayak, D. Pelusi, and W. Ding, “Graph based               granulation rough set,” Inf. Sci., vol. 180, no. 6, pp. 949–970, 2010.
+     feature selection investigating boundary region of rough set for language     [40] S. K. Pal, S. K. Meher, and S. Dutta, “Class-dependent rough-fuzzy
+     identification,” Exp. Syst. Appl., vol. 158, May 2020, Art. no. 113575.            granular space, dispersion index and classification,” Pattern Recognit.,
+[14] H. M. Chen, T. R. Li, C. Luo, S. J. Horng, and G. Y. Wang, “A decision-            vol. 45, no. 7, pp. 2690–2707, 2012.
+     theoretic rough set approach for dynamic data mining,” IEEE Trans.            [41] J. T. Yao, A. V. Vasilakos, and W. Pedrycz, “Granular computing:
+     Fuzzy Syst., vol. 23, no. 6, pp. 1958–1970, Dec. 2015.                             Perspectives and challenges,” IEEE Trans. Cybern., vol. 43, no. 6,
+[15] D. C. Liang, W. Pedrycz, and D. Liu, “Determining three-way deci-                  pp. 1977–1989, Dec. 2013.
+     sions with decision-theoretic rough sets using a relative value approach,”    [42] C. E. Shannon, “A mathematical theory of communication,” Bell Syst.
+     IEEE Trans. Syst., Man, Cybern., Syst., vol. 47, no. 8, pp. 1785–1799,             Tech. J., vol. 27, no. 3, pp. 379–423, 1948.
+     Aug. 2017.                                                                    [43] J. Y. Liang, Z. Z. Shi, D. Y. Li, and M. J. Wierman, “Information entropy,
+[16] P. F. Zhang et al., “Multi-source information fusion based on rough set            rough entropy and knowledge granulation in incomplete information
+     theory: A review,” Inf. Fusion, vol. 68, pp. 85–117, Apr. 2021.                    systems,” Int. J. Gen. Syst., vol. 35, no. 6, pp. 641–654, 2006.
+[17] M. Prasad, S. Tripathi, and K. Dahal, “An efficient feature selection         [44] J. Y. Liang, J. H. Wang, and Y. H. Qian, “A new measure of uncertainty
+     based Bayesian and rough set approach for intrusion detection,” Appl.              based on knowledge granulation for rough sets,” Inf. Sci., vol. 179, no. 4,
+     Soft Comput., vol. 87, Jan. 2020, Art. no. 105980.                                 pp. 458–470, 2009.
+[18] X. Y. Zhang, H. Y. Gou, Z. Y. Lv, and D. Q. Miao, “Double-quantitative        [45] J. H. Dai, B. J. Wei, X. H. Zhang, and Q. L. Zhang, “Uncertainty
+     distance measurement and classification learning based on the tri-                 measurement for incomplete interval-valued information systems based
+     level granular structure of neighborhood system,” Knowl. Based Syst.,              on α-weak similarity,” Knowl. Based Syst., vol. 136, pp. 159–171,
+     vol. 217, nos. 1–4, 2021, Art. no. 106799.                                         Nov. 2017.
+                                                                                   [46] Q. H. Zhang, S. H. Yang, and G. Y. Wang, “Measuring uncertainty of
+[19] Y. M. Chen, D. Q. Miao, and R. Z. Wang, “Outlier detection based
+                                                                                        probabilistic rough set model from its three regions,” IEEE Trans. Syst.,
+     on granular computing,” in Proc. Int. Conf. Rough Sets Current Trends
+                                                                                        Man, Cybern., Syst., vol. 47, no. 12, pp. 3299–3309, Dec. 2017.
+     Comput., 2008, pp. 283–292.
+                                                                                   [47] Q. H. Hu and D. R. Yu, “Neighborhood entropy,” in Proc. Int. Conf.
+[20] F. Jiang, Y. F. Sui, and C. G. Cao, “Some issues about outlier detection
+                                                                                        Mach. Learn. Cybern., vol. 3, 2009, pp. 1776–1782.
+     in rough set theory,” Exp. Syst. Appl., vol. 36, no. 3, pp. 4680–4687,
+                                                                                   [48] D. R. Wilson and T. R. Martinez, “Improved heterogeneous distance
+     2009.
+                                                                                        functions,” J. Artif. Intell. Res., vol. 6, pp. 1–34, Jan. 1997.
+[21] F. Jiang, Y. F. Sui, and C. G. Cao, “An information entropy-based             [49] G. O. Campos et al., “On the evaluation of unsupervised outlier detec-
+     approach to outlier detection in rough sets,” Exp. Syst. Appl., vol. 37,           tion: Measures, datasets, and an empirical study,” Data Min. Knowl.
+     no. 9, pp. 6338–6344, 2010.                                                        Disc., vol. 30, no. 4, pp. 891–927, 2016.
+[22] F. Jiang, Y. F. Sui, and C. G. Cao, “A hybrid approach to outlier detection   [50] Z. Yuan, H. M. Chen, T. R. Li, J. Liu, and S. Wang, “Fuzzy information
+     based on boundary region,” Pattern Recognit. Lett., vol. 32, no. 14,               entropy-based adaptive approach for hybrid feature outlier detection,”
+     pp. 1860–1870, 2011.                                                               Fuzzy Sets Syst., vol. 421, pp. 1–28, Sep. 2021.
+[23] A. Albanese, S. K. Pal, and A. Petrosino, “Rough sets, kernel set,            [51] E. M. Knorr, R. T. Ng, and V. Tucakov, “Distance-based outliers:
+     and spatiotemporal outlier detection,” IEEE Trans. Knowl. Data Eng.,               Algorithms and applications,” VLDB J., vol. 8, no. 3, pp. 237–253, 2000.
+     vol. 26, no. 1, pp. 194–207, Jan. 2014.                                       [52] S. Ramaswamy, R. Rastogi, and K. Shim, “Efficient algorithms for min-
+[24] F. Maciá-Pérez, J. V. Berna-Martinez, A. F. Oliva, and M. A. A. Ortega,            ing outliers from large data sets,” ACM SIGMOD Rec., vol. 29, no. 2,
+     “Algorithm for the detection of outliers based on the theory of rough              pp. 427–438, 2000.
+     sets,” Decis. Support Syst., vol. 75, pp. 63–75, Jul. 2015.
+[25] F. Jiang and Y. M. Chen, “Outlier detection based on granular computing
+     and rough set theory,” Appl. Intell., vol. 42, no. 2, pp. 303–322, 2015.
+[26] F. Jiang, H. B. Zhao, J. W. Du, Y. Xue, and Y. J. Peng, “Outlier detection
+     based on approximation accuracy entropy,” Int. J. Mach. Learn. Cybern.,
+     vol. 10, no. 9, pp. 2483–2499, Aug. 2019.
+[27] M. Singh and R. Pamula, “An outlier detection approach in large-
+     scale data stream using rough set,” Neural Comput. Appl., vol. 32,
+     pp. 9113–9127, 2020.
+[28] T. Y. Lin, “Neighborhood systems and relational databases,” in Proc.
+     ACM 16th Annu. Conf. Comput. Sci., 1988, p. 725.
+[29] Y. Y. Yao, “Relational interpretations of neighborhood operators and
+     rough set approximation operators,” Inf. Sci., vol. 111, nos. 1–4,                                      Zhong Yuan received the B.S. degree in math-
+     pp. 239–259, 1998.                                                                                      ematics from Sichuan Minzu College, Kangding,
+[30] Q. H. Hu, D. R. Yu, J. F. Liu, and C. X. Wu, “Neighborhood rough set                                    China, in 2015, and the M.S. degree in mathematics
+     based heterogeneous feature subset selection,” Inf. Sci., vol. 178, no. 18,                             from Sichuan Normal University, Chengdu, China,
+     pp. 3577–3594, 2008.                                                                                    in 2018. He is currently pursuing the Ph.D. degree
+[31] Q. H. Hu, J. F. Liu, and D. R. Yu, “Mixed feature selection based                                       with Southwest Jiaotong University, Chengdu.
+     on granulation and approximation,” Knowl. Based Syst., vol. 21, no. 4,                                     His research interests include rough sets, granular
+     pp. 294–304, 2008.                                                                                      computing, and data mining.
+[32] Q. H. Hu, D. R. Yu, and Z. X. Xie, “Neighborhood classifiers,” Exp.
+     Syst. Appl., vol. 34, no. 2, pp. 866–876, 2008.
+
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+YUAN et al.: MULTIGRANULATION RELATIVE ENTROPY-BASED MIXED ATTRIBUTE OUTLIER DETECTION                                                                   5187
+
+
+
+                         Hongmei Chen received the M.S. degree in mecha-                                Xianyong Zhang received the B.Sc., M.Sc., and
+                         tronic engineering from the University of Electronic                           Ph.D. degrees in mathematics from Sichuan Normal
+                         Science and Technology of China, Chengdu, China,                               University, Chengdu, China, in 2001, 2004, and
+                         in 2000, and the Ph.D. degree in computer applica-                             2011, respectively.
+                         tion technology from Southwest Jiaotong University,                              He is currently a Professor and a Doctoral Tutor.
+                         Chengdu, in 2013.                                                              He completed a two-year visiting research with the
+                            She is currently a Professor with the School of                             University of Regina, Regina, SK, Canada, and two-
+                         Computing and Artificial Intelligence, Southwest                               year postoral work with Tongji University, Shanghai,
+                         Jiaotong University. Her research interests include                            China. His research interests include rough sets,
+                         the areas of data mining, pattern recognition, fuzzy                           granular computing, and data mining.
+                         sets, and rough sets.
+
+
+
+
+                          Tianrui Li (Senior Member, IEEE) received the B.S.
+                          and M.S. degrees in mathematics, and the Ph.D.
+                          degree in traffic control and information engineering
+                          from the Southwest Jiaotong University, Chengdu,
+                          China, in 1992, 1995, and 2002, respectively.
+                             He was a Postdoctoral Researcher with SCK.CEN,                             Binbin Sang received the B.S. degree in mathe-
+                          Belgium, from 2005 to 2006, and a Visiting                                    matics from Yangtze Normal University, Chongqing,
+                          Professor with Hasselt University, Belgium, in 2008,                          China, in 2015, and the M.S. degree in mathemat-
+                          the University of Technology, Sydney, Australia, in                           ics from the Chongqing University of Technology,
+                          2009, and the University of Regina, Canada, 2014.                             Chongqing, in 2018. He is currently pursuing the
+                          He is currently a Professor and the Director of the                           Ph.D. degree with Southwest Jiaotong University,
+Key Laboratory of Cloud Computing and Intelligent Techniques, Southwest                                 Chengdu, China.
+Jiaotong University. He has authored or coauthored more than 300 research                                  His research interests include rough sets, granular
+papers in refereed journals and conferences. His research interests include big                         computing, and data mining.
+data, cloud computing, data mining, granular computing and rough sets.
+   Dr. Li is a Fellow of IRSS and Senior Member of ACM.
+
+
+
+
+          Authorized licensed use limited to: SICHUAN UNIVERSITY. Downloaded on July 19,2022 at 23:49:30 UTC from IEEE Xplore. Restrictions apply.
+
