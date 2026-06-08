@@ -46,8 +46,11 @@ def main():
 
     # Save the merged results
     try:
-        # use openpyxl as engine for writing to keep it consistent
-        df.to_excel(output_file, index=False, engine='openpyxl')
+        temp_xlsx = output_file + 'x'
+        df.to_excel(temp_xlsx, index=False, engine='openpyxl')
+        if os.path.exists(output_file):
+            os.remove(output_file)
+        os.rename(temp_xlsx, output_file)
         print(f"Successfully saved compiled results to {output_file}")
     except Exception as e:
         print(f"Failed to save {output_file}: {e}")

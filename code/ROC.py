@@ -59,6 +59,11 @@ def plot_roc_for_dataset(dataset_name, algorithms, data_dir, results_base_dir, n
     if y_true is None:
         return
 
+    # Convert y_true to binary with anomaly as 1
+    unique_labels, counts = np.unique(y_true, return_counts=True)
+    outlier_label = unique_labels[np.argmin(counts)]
+    y_binary = (y_true == outlier_label).astype(int)
+
     plt.figure(figsize=(10, 8))
 
     # Store AUCs for legend sorting
@@ -70,10 +75,10 @@ def plot_roc_for_dataset(dataset_name, algorithms, data_dir, results_base_dir, n
         if scores is not None:
             # check if scores are inversely correlated with outliers
             try:
-                fpr, tpr, _ = roc_curve(y_true, scores)
+                fpr, tpr, _ = roc_curve(y_binary, scores)
                 roc_auc = auc(fpr, tpr)
                 if roc_auc < 0.5:
-                    fpr, tpr, _ = roc_curve(y_true, -scores)
+                    fpr, tpr, _ = roc_curve(y_binary, -scores)
                     roc_auc = auc(fpr, tpr)
 
                 roc_data[alg] = (fpr, tpr, roc_auc)
